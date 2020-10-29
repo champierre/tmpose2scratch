@@ -2,10 +2,10 @@
 
 LF=$(printf '\\\012_')
 LF=${LF%_}
-EXTENSION_NAME=TM2Scratch
-EXTENSION_ID=tm2scratch
+EXTENSION_NAME=TMPose2Scratch
+EXTENSION_ID=tmpose2scratch
 COLLABORATOR="Tsukurusha, YengawaLab and Google"
-EXTENSION_DESCRIPTION="画像や音声を学習させよう。"
+EXTENSION_DESCRIPTION="ポーズを学習させよう。"
 
 cd node_modules/scratch-vm
 npm install ml5

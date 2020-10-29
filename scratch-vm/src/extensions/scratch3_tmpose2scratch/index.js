@@ -139,7 +139,7 @@ const Message = {
 
 const AvailableLocales = ['en', 'ja', 'ja-Hira', 'zh-cn'];
 
-class Scratch3TM2ScratchBlocks {
+class Scratch3TMPose2ScratchBlocks {
     constructor (runtime) {
         this.runtime = runtime;
         this.locale = this.setLocale();
@@ -196,8 +196,8 @@ class Scratch3TM2ScratchBlocks {
         this.locale = this.setLocale();
 
         return {
-            id: 'tm2scratch',
-            name: 'TM2Scratch',
+            id: 'tmpose2scratch',
+            name: 'TMPose2Scratch',
             blockIconURI: blockIconURI,
             blocks: [
                 {
@@ -928,4 +928,4 @@ class Scratch3TM2ScratchBlocks {
     }
 }
 
-module.exports = Scratch3TM2ScratchBlocks;
+module.exports = Scratch3TMPose2ScratchBlocks;
