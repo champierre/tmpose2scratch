@@ -3,67 +3,40 @@ const BlockType = require('../../extension-support/block-type');
 const Cast = require('../../util/cast');
 const MathUtil = require('../../util/math-util');
 const log = require('../../util/log');
-const ml5 = require('ml5');
+const tmPose = require('@teachablemachine/pose');
 const formatMessage = require('format-message');
 const blockIconURI = 'data:image/png;base64,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';
 
 const Message = {
-    image_classification_model_url: {
-        'ja': '画像分類モデルURL[URL]',
-        'ja-Hira': 'がぞうぶんるいモデル[URL]',
-        'en': 'image classification model URL [URL]'
+    pose_classification_model_url: {
+        'ja': 'ポーズ分類モデルURL[URL]',
+        'ja-Hira': 'ポーズぶんるいモデル[URL]',
+        'en': 'pose classification model URL [URL]'
     },
-    sound_classification_model_url: {
-        'ja': '音声分類モデルURL[URL]',
-        'ja-Hira': 'おんせいぶんるいモデル[URL]',
-        'en': 'sound classification model URL [URL]'
+    classify_pose: {
+        'ja': 'ポーズを推定する',
+        'ja-Hira': 'ポーズをすいていする',
+        'en': 'estimate pose'
     },
-    classify_image: {
-        'ja': '画像を分類する',
-        'ja-Hira': 'がぞうをぶんるいする',
-        'en': 'classify image'
+    pose_label: {
+        'ja': 'ポーズラベル',
+        'ja-Hira': 'ポーズラベル',
+        'en': 'pose label'
     },
-    image_label: {
-        'ja': '画像ラベル',
-        'ja-Hira': 'がぞうラベル',
-        'en': 'image label'
+    is_pose_label_detected: {
+        'ja': '[LABEL]のポーズになった',
+        'ja-Hira': '[LABEL]のポーズになった',
+        'en': 'pose [LABEL] detected'
     },
-    sound_label: {
-        'ja': '音声ラベル',
-        'ja-Hira': 'おんせいラベル',
-        'en': 'sound label'
+    pose_label_confidence: {
+        'ja': 'ポーズラベル[LABEL]の確度',
+        'ja-Hira': 'ポーズラベル[LABEL]のかくど',
+        'en': 'confidence of pose [LABEL]'
     },
-    when_received_block: {
-        'ja': '画像ラベル[LABEL]を受け取ったとき',
-        'ja-Hira': 'がぞうラベル[LABEL]をうけとったとき',
-        'en': 'when received image label:[LABEL]',
-        'zh-cn': '接收到类别[LABEL]时'
-    },
-    is_image_label_detected: {
-        'ja': '[LABEL]の画像が見つかった',
-        'ja-Hira': '[LABEL]のがぞうがみつかった',
-        'en': 'image [LABEL] detected'
-    },
-    is_sound_label_detected: {
-        'ja': '[LABEL]の音声が聞こえた',
-        'ja-Hira': '[LABEL]のおんせいがきこえた',
-        'en': 'sound [LABEL] detected'
-    },
-    image_label_confidence: {
-        'ja': '画像ラベル[LABEL]の確度',
-        'ja-Hira': 'がぞうラベル[LABEL]のかくど',
-        'en': 'confidence of image [LABEL]'
-    },
-    sound_label_confidence: {
-        'ja': '音声ラベル[LABEL]の確度',
-        'ja-Hira': 'おんせいラベル[LABEL]のかくど',
-        'en': 'confidence of sound [LABEL]'
-    },
-    when_received_sound_label_block: {
-        'ja': '音声ラベル[LABEL]を受け取ったとき',
-        'ja-Hira': '音声ラベル[LABEL]をうけとったとき',
-        'en': 'when received sound label:[LABEL]',
-        'zh-cn': '接收到声音类别[LABEL]时'
+    when_received_pose_label_block: {
+        'ja': 'ポーズラベル[LABEL]を受け取ったとき',
+        'ja-Hira': 'ポーズラベル[LABEL]をうけとったとき',
+        'en': 'when received pose label:[LABEL]'
     },
     label_block: {
         'ja': 'ラベル',
@@ -162,34 +135,25 @@ class Scratch3TMPose2ScratchBlocks {
             this.video.srcObject = stream;
         });
 
-        this.timer = setInterval(() => {
-            this.classifyVideoImage();
+        this.poseTimer = setInterval(() => {
+            this.classifyPoseInVideo();
         }, this.minInterval);
 
-        this.imageModelUrl = null;
-        this.imageMetadata = null;
-        this.imageClassifier = null;
-        this.initImageProbableLabels();
-        this.confidenceThreshold = 0.5;
+        this.poseModelUrl = null;
+        this.poseMetadata = null;
+        this.poseModel = null;
+        this.initPoseProbableLabels();
 
-        this.soundModelUrl = null;
-        this.soundMetadata = null;
-        this.soundClassifier = null;
-        this.soundClassifierEnabled = false;
-        this.initSoundProbableLabels();
+        this.confidenceThreshold = 0.5;
 
         this.runtime.ioDevices.video.enableVideo();
     }
 
     /**
-     * Initialize the result of image classification.
+     * Initialize the result of pose estimation.
      */
-    initImageProbableLabels () {
-        this.imageProbableLabels = [];
-    }
-
-    initSoundProbableLabels () {
-        this.soundProbableLabels = [];
+    initPoseProbableLabels () {
+        this.poseProbableLabels = [];
     }
 
     getInfo () {
@@ -201,115 +165,61 @@ class Scratch3TMPose2ScratchBlocks {
             blockIconURI: blockIconURI,
             blocks: [
                 {
-                    opcode: 'whenReceived',
-                    text: Message.when_received_block[this.locale],
+                    opcode: 'whenPoseLabelReceived',
+                    text: Message.when_received_pose_label_block[this.locale],
                     blockType: BlockType.HAT,
                     arguments: {
                         LABEL: {
                             type: ArgumentType.STRING,
-                            menu: 'received_menu',
+                            menu: 'received_pose_label_menu',
                             defaultValue: Message.any[this.locale]
                         }
                     }
                 },
                 {
-                    opcode: 'isImageLabelDetected',
-                    text: Message.is_image_label_detected[this.locale],
+                    opcode: 'isPoseLabelDetected',
+                    text: Message.is_pose_label_detected[this.locale],
                     blockType: BlockType.BOOLEAN,
                     arguments: {
                         LABEL: {
                             type: ArgumentType.STRING,
-                            menu: 'image_labels_menu',
+                            menu: 'pose_labels_menu',
                             defaultValue: Message.any_without_of[this.locale]
                         }
                     }
                 },
                 {
-                    opcode: 'imageLabelConfidence',
-                    text: Message.image_label_confidence[this.locale],
+                    opcode: 'poseLabelConfidence',
+                    text: Message.pose_label_confidence[this.locale],
                     blockType: BlockType.REPORTER,
                     disableMonitor: true,
                     arguments: {
                         LABEL: {
                             type: ArgumentType.STRING,
-                            menu: 'image_labels_without_any_menu',
+                            menu: 'pose_labels_without_any_menu',
                             defaultValue: ''
                         }
                     }
                 },
                 {
-                    opcode: 'setImageClassificationModelURL',
-                    text: Message.image_classification_model_url[this.locale],
+                    opcode: 'setPoseClassificationModelURL',
+                    text: Message.pose_classification_model_url[this.locale],
                     blockType: BlockType.COMMAND,
                     arguments: {
                         URL: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'https://teachablemachine.withgoogle.com/models/0rX_3hoH/'
+                            defaultValue: 'https://teachablemachine.withgoogle.com/models/oPK1TaF6P/'
                         }
                     }
                 },
                 {
-                    opcode: 'classifyVideoImageBlock',
-                    text: Message.classify_image[this.locale],
+                    opcode: 'classifyVideoPoseBlock',
+                    text: Message.classify_pose[this.locale],
                     blockType: BlockType.COMMAND
                 },
                 {
-                    opcode: 'getImageLabel',
-                    text: Message.image_label[this.locale],
-                    blockType: BlockType.REPORTER
-                },
-                '---',
-                {
-                    opcode: 'whenReceivedSoundLabel',
-                    text: Message.when_received_sound_label_block[this.locale],
-                    blockType: BlockType.HAT,
-                    arguments: {
-                        LABEL: {
-                            type: ArgumentType.STRING,
-                            menu: 'received_sound_label_menu',
-                            defaultValue: Message.any[this.locale]
-                        }
-                    }
-                },
-                {
-                    opcode: 'isSoundLabelDetected',
-                    text: Message.is_sound_label_detected[this.locale],
-                    blockType: BlockType.BOOLEAN,
-                    arguments: {
-                        LABEL: {
-                            type: ArgumentType.STRING,
-                            menu: 'sound_labels_menu',
-                            defaultValue: Message.any_without_of[this.locale]
-                        }
-                    }
-                },
-                {
-                    opcode: 'soundLabelConfidence',
-                    text: Message.sound_label_confidence[this.locale],
-                    blockType: BlockType.REPORTER,
-                    disableMonitor: true,
-                    arguments: {
-                        LABEL: {
-                            type: ArgumentType.STRING,
-                            menu: 'sound_labels_without_any_menu',
-                            defaultValue: ''
-                        }
-                    }
-                },
-                {
-                    opcode: 'setSoundClassificationModelURL',
-                    text: Message.sound_classification_model_url[this.locale],
-                    blockType: BlockType.COMMAND,
-                    arguments: {
-                        URL: {
-                            type: ArgumentType.STRING,
-                            defaultValue: 'https://teachablemachine.withgoogle.com/models/xP0spGSB/'
-                        }
-                    }
-                },
-                {
-                    opcode: 'getSoundLabel',
-                    text: Message.sound_label[this.locale],
+                    opcode: 'getPoseLabel',
+                    text: Message.pose_label[this.locale],
                     blockType: BlockType.REPORTER
                 },
                 '---',
@@ -368,29 +278,17 @@ class Scratch3TMPose2ScratchBlocks {
                 }
             ],
             menus: {
-                received_menu: {
+                received_pose_label_menu: {
                     acceptReporters: true,
-                    items: 'getLabelsMenu'
+                    items: 'getPoseLabelsMenu'
                 },
-                image_labels_menu: {
+                pose_labels_menu: {
                     acceptReporters: true,
-                    items: 'getLabelsWithAnyWithoutOfMenu'
+                    items: 'getPoseLabelsWithAnyWithoutOfMenu'
                 },
-                image_labels_without_any_menu: {
+                pose_labels_without_any_menu: {
                     acceptReporters: true,
-                    items: 'getLabelsWithoutAnyMenu'
-                },
-                received_sound_label_menu: {
-                    acceptReporters: true,
-                    items: 'getSoundLabelsWithoutBackgroundMenu'
-                },
-                sound_labels_menu: {
-                    acceptReporters: true,
-                    items: 'getSoundLabelsWithoutBackgroundWithAnyWithoutOfMenu'
-                },
-                sound_labels_without_any_menu: {
-                    acceptReporters: true,
-                    items: 'getSoundLabelsWithoutAnyMenu'
+                    items: 'getPoseLabelsWithoutAnyMenu'
                 },
                 video_menu: this.getVideoMenu(),
                 classification_interval_menu: this.getClassificationIntervalMenu(),
@@ -400,13 +298,13 @@ class Scratch3TMPose2ScratchBlocks {
     }
 
     /**
-     * Detect change of the selected image label is the most probable one or not.
+     * Return whether the most probabe label of pose is the selected one.
      * @param {object} args - The block's arguments.
      * @property {string} LABEL - The label to detect.
      * @return {boolean} - Whether the label is most probable or not.
      */
-    whenReceived (args) {
-        const label = this.getImageLabel();
+    whenPoseLabelReceived (args) {
+        const label = this.getPoseLabel();
         if (args.LABEL === Message.any[this.locale]) {
             return label !== '';
         }
@@ -414,17 +312,13 @@ class Scratch3TMPose2ScratchBlocks {
     }
 
     /**
-     * Detect change of the selected sound label is the most probable one or not.
+     * Return whether the most probable pose label is the selected one or not.
      * @param {object} args - The block's arguments.
      * @property {string} LABEL - The label to detect.
      * @return {boolean} - Whether the label is most probable or not.
      */
-    whenReceivedSoundLabel (args) {
-        if (!this.soundClassifierEnabled) {
-            return;
-        }
-
-        const label = this.getSoundLabel();
+    isPoseLabelDetected (args) {
+        const label = this.getPoseLabel();
         if (args.LABEL === Message.any[this.locale]) {
             return label !== '';
         }
@@ -432,105 +326,53 @@ class Scratch3TMPose2ScratchBlocks {
     }
 
     /**
-     * Return whether the most probable image label is the selected one or not.
-     * @param {object} args - The block's arguments.
-     * @property {string} LABEL - The label to detect.
-     * @return {boolean} - Whether the label is most probable or not.
-     */
-    isImageLabelDetected (args) {
-        const label = this.getImageLabel();
-        if (args.LABEL === Message.any[this.locale]) {
-            return label !== '';
-        }
-        return label === args.LABEL;
-    }
-
-    /**
-     * Return whether the most probable sound label is the selected one or not.
-     * @param {object} args - The block's arguments.
-     * @property {string} LABEL - The label to detect.
-     * @return {boolean} - Whether the label is most probable or not.
-     */
-    isSoundLabelDetected (args) {
-        const label = this.getSoundLabel();
-        if (args.LABEL === Message.any[this.locale]) {
-            return label !== '';
-        }
-        return label === args.LABEL;
-    }
-
-    /**
-     * Return confidence of the image label.
+     * Return confidence of the pose label.
      * @param {object} args - The block's arguments.
      * @property {string} LABEL - Selected label.
      * @return {number} - Confidence of the label.
      */
-    imageLabelConfidence (args) {
+    poseLabelConfidence (args) {
         if (args.LABEL === '') {
             return 0;
         }
-        const entry = this.imageProbableLabels.find(element => element.label === args.LABEL);
+        const entry = this.poseProbableLabels.find(element => element.label === args.LABEL);
         return (entry ? entry.confidence : 0);
     }
 
     /**
-     * Return confidence of the sound label.
-     * @param {object} args - The block's arguments.
-     * @property {string} LABEL - Selected label.
-     * @return {number} - Confidence of the label.
-     */
-    soundLabelConfidence (args) {
-        if (!this.soundProbableLabels || this.soundProbableLabels.length === 0) return 0;
-
-        if (args.LABEL === '') {
-            return 0;
-        }
-        const entry = this.soundProbableLabels.find(element => element.label === args.LABEL);
-        return (entry ? entry.confidence : 0);
-    }
-
-    /**
-     * Set a model for image classification from URL.
+     * Set a model for pose classification from URL.
      * @param {object} args - the block's arguments.
      * @property {string} URL - URL of model to be loaded.
      * @return {Promise} - A Promise that resolve after loaded.
      */
-    setImageClassificationModelURL (args) {
-        return this.loadImageClassificationModelFromURL(args.URL);
+    setPoseClassificationModelURL (args) {
+        return this.loadPoseClassificationModelFromURL(args.URL);
     }
 
     /**
-     * Set a model for sound classification from URL.
-     * @param {object} args - the block's arguments.
-     * @property {string} URL - URL of model to be loaded.
-     * @return {Promise} - A Promise that resolve after loaded.
-     */
-    setSoundClassificationModelURL (args) {
-        return this.loadSoundClassificationModelFromURL(args.URL);
-    }
-
-    /**
-     * Load a model from URL for image classification.
+     * Load a model from URL for pose classification.
      * @param {string} url - URL of model to be loaded.
      * @return {Promise} - A Promise that resolves after loaded.
      */
-    loadImageClassificationModelFromURL (url) {
+    loadPoseClassificationModelFromURL (url) {
         return new Promise(resolve => {
             fetch(`${url}metadata.json`)
                 .then(res => res.json())
                 .then(metadata => {
-                    if (url === this.imageModelUrl &&
-                        (new Date(metadata.timeStamp).getTime() === new Date(this.imageMetadata.timeStamp).getTime())) {
-                        log.info(`image model already loaded: ${url}`);
+                    if (url === this.poseModelUrl &&
+                        (new Date(metadata.timeStamp).getTime() === new Date(this.poseMetadata.timeStamp).getTime())) {
+                        log.info(`pose model already loaded: ${url}`);
                         resolve();
                     } else {
-                        ml5.imageClassifier(`${url}model.json`)
-                            .then(classifier => {
-                                this.imageModelUrl = url;
-                                this.imageMetadata = metadata;
-                                this.imageClassifier = classifier;
-                                this.initImageProbableLabels();
-                                log.info(`image model loaded from: ${url}`);
+
+                        const modelURL = url + "model.json";
+                        const metadataURL = url + "metadata.json";
+
+                        tmPose.load(modelURL, metadataURL)
+                            .then(poseModel => {
+                                this.poseModel = poseModel;
+                                this.poseMetadata = metadata;
+                                log.info(`pose model loaded from: ${url}`);
                             })
                             .catch(error => {
                                 log.warn(error);
@@ -546,120 +388,37 @@ class Scratch3TMPose2ScratchBlocks {
     }
 
     /**
-     * Load a model from URL for sound classification.
-     * @param {string} url - URL of model to be loaded.
-     * @return {Promise} - A Promise that resolves after loaded.
-     */
-    loadSoundClassificationModelFromURL (url) {
-        return new Promise(resolve => {
-            fetch(`${url}metadata.json`)
-                .then(res => res.json())
-                .then(metadata => {
-                    if (url === this.soundModelUrl &&
-                        (new Date(metadata.timeStamp).getTime() === new Date(this.soundMetadata.timeStamp).getTime())) {
-                        log.info(`sound model already loaded: ${url}`);
-                        resolve();
-                    } else {
-                        ml5.soundClassifier(`${url}model.json`)
-                            .then(classifier => {
-                                this.soundModelUrl = url;
-                                this.soundMetadata = metadata;
-                                this.soundClassifier = classifier;
-                                this.initSoundProbableLabels();
-                                this.soundClassifierEnabled = true;
-                                this.classifySound();
-                                log.info(`sound model loaded from: ${url}`);
-                            })
-                            .catch(error => {
-                                log.warn(error);
-                            })
-                            .finally(() => resolve());
-                    }
-                })
-                .catch(error => {
-                    log.warn(error);
-                    resolve();
-                });
-        });
-    }
-
-    /**
-     * Return menu items to detect label in the image.
+     * Return menu items to detect the pose label.
      * @return {Array} - Menu items with 'any'.
      */
-    getLabelsMenu () {
+    getPoseLabelsMenu () {
         let items = [Message.any[this.locale]];
-        if (!this.imageMetadata) return items;
-        items = items.concat(this.imageMetadata.labels);
+        if (!this.poseMetadata) return items;
+        items = items.concat(this.poseMetadata.labels);
         return items;
     }
 
     /**
-     * Return menu items to detect label in the image.
+     * Return menu items to detect the pose label.
      * @return {Array} - Menu items with 'any without of'.
      */
-    getLabelsWithAnyWithoutOfMenu () {
+    getPoseLabelsWithAnyWithoutOfMenu () {
         let items = [Message.any_without_of[this.locale]];
-        if (!this.imageMetadata) return items;
-        items = items.concat(this.imageMetadata.labels);
+        if (!this.poseMetadata) return items;
+        items = items.concat(this.poseMetadata.labels);
         return items;
     }
 
     /**
-     * Return menu items to detect label in the image.
-     * @return {Array} - Menu items with 'any'.
-     */
-    getSoundLabelsMenu () {
-        let items = [Message.any[this.locale]];
-        if (!this.soundMetadata) return items;
-        items = items.concat(this.soundMetadata.wordLabels);
-        return items;
-    }
-
-    /**
-     * Return menu itmes to get properties of the image label.
+     * Return menu itmes to get properties of the pose label.
      * @return {Array} - Menu items with ''.
      */
-    getLabelsWithoutAnyMenu () {
+    getPoseLabelsWithoutAnyMenu () {
         let items = [''];
-        if (this.imageMetadata) {
-            items = items.concat(this.imageMetadata.labels);
+        if (this.poseMetadata) {
+            items = items.concat(this.poseMetadata.labels);
         }
         return items;
-    }
-
-    /**
-     * Return menu itmes to get properties of the sound label.
-     * @return {Array} - Menu items with ''.
-     */
-    getSoundLabelsWithoutAnyMenu () {
-        let items = [''];
-        if (this.soundMetadata) {
-            items = items.concat(this.soundMetadata.wordLabels);
-        }
-        return items;
-    }
-
-    /**
-     * Return menu itmes to get properties of the sound label.
-     * @return {Array} - Menu items without '_background_noise_'.
-     */
-    getSoundLabelsWithoutBackgroundMenu () {
-        let items = [Message.any[this.locale]];
-        if (!this.soundMetadata) return items;
-        items = items.concat(this.soundMetadata.wordLabels.slice(1));
-        return items;
-    }
-
-    /**
-     * Return menu itmes to get properties of the sound label.
-     * @return {Array} - Menu items without '_background_noise_' and with 'any without of'.
-     */
-    getSoundLabelsWithoutBackgroundWithAnyWithoutOfMenu () {
-      let items = [Message.any_without_of[this.locale]];
-      if (!this.soundMetadata) return items;
-      items = items.concat(this.soundMetadata.wordLabels.slice(1));
-      return items;
     }
 
     /**
@@ -680,20 +439,20 @@ class Scratch3TMPose2ScratchBlocks {
     }
 
     /**
-     * Classify image from the video input.
+     * Classify pose from the video input.
      * Call stack will wait until the previous classification was done.
      *
      * @param {object} _args - the block's arguments.
      * @param {object} util - utility object provided by the runtime.
      * @return {Promise} - a Promise that resolves after classification.
      */
-    classifyVideoImageBlock (_args, util) {
-        if (this._isImageClassifying) {
+    classifyVideoPoseBlock (_args, util) {
+        if (this._isPoseClassifying) {
             if (util) util.yield();
             return;
         }
         return new Promise(resolve => {
-            this.classifyImage(this.video)
+            this.classifyPose(this.video)
                 .then(result => {
                     resolve(JSON.stringify(result));
                 });
@@ -701,69 +460,39 @@ class Scratch3TMPose2ScratchBlocks {
     }
 
     /**
-     * Classyfy image from input data source.
+     * Classyfy pose from input data source.
      *
      * @param {HTMLImageElement | ImageData | HTMLCanvasElement | HTMLVideoElement} input
      *  - Data source for classification.
      * @return {Promise} - A Promise that resolves the result of classification.
      *  The result will be empty when the imageClassifier was not set.
      */
-    classifyImage (input) {
-        if (!this.imageMetadata || !this.imageClassifier) {
-            this._isImageClassifying = false;
+    classifyPose(input) {
+        if (!this.poseMetadata || !this.poseModel) {
+            this._isPoseClassifying = false;
             return Promise.resolve([]);
         }
-        this._isImageClassifying = true;
-        return this.imageClassifier.classify(input)
+        this._isPoseClassifying = true;
+        return this.poseModel.estimatePose(input)
             .then(result => {
-                this.imageProbableLabels = result.slice();
-                this.imageProbableLabelsUpdated = true;
-                return result;
+                console.log(result.posenetOutput);
+                return this.poseModel.predict(result.posenetOutput);
+                // this.poseProbableLabels = result.slice();
+                // this.poseProbableLabelsUpdated = true;
+                // return result;
+            }).then(prediction => {
+                console.log(prediction);
             })
             .finally(() => {
                 setTimeout(() => {
                     // Initialize probabilities to reset whenReceived blocks.
-                    this.initImageProbableLabels();
-                    this._isImageClassifying = false;
+                    this.initPoseProbableLabels();
+                    this._isPoseClassifying = false;
                 }, this.interval);
             });
     }
 
-    /**
-     * Classify sound.
-     */
-    classifySound () {
-        this.soundClassifier.classify((err, result) => {
-            if (this.soundClassifierEnabled && result) {
-                this.soundProbableLabels = result.slice();
-                setTimeout(() => {
-                    // Initialize probabilities to reset whenReceivedSoundLabel blocks.
-                    this.initSoundProbableLabels();
-                }, this.interval);
-            }
-            if (err) {
-                console.error(err);
-            }
-        });
-    }
-
-    /**
-     * Get the most probable label in the image.
-     * Retrun the last classification result or '' when the first classification was not done.
-     * @return {string} label
-    */
-    getImageLabel () {
-        if (!this.imageProbableLabels || this.imageProbableLabels.length === 0) return '';
-        const mostOne = this.getMostProbableOne(this.imageProbableLabels);
-        return (mostOne.confidence >= this.confidenceThreshold) ? mostOne.label : '';
-    }
-
-    /**
-     * Get the most probable label in the sound.
-     * Retrun the last classification result or '' when the first classification was not done.
-     * @return {string} label
-    */
-    getSoundLabel () {
+    getPoseLabel () {
         if (!this.soundProbableLabels || this.soundProbableLabels.length === 0) return '';
         const mostOne = this.getMostProbableOne(this.soundProbableLabels);
         return (mostOne.confidence >= this.confidenceThreshold) ? mostOne.label : '';
@@ -839,13 +568,13 @@ class Scratch3TMPose2ScratchBlocks {
     }
 
     /**
-     * Classify video image.
+     * Classify pose in video.
      * @return {Promise} - A Promise that resolves the result of classification.
      *  The result will be empty when another classification was under going.
      */
-    classifyVideoImage () {
-        if (this._isImageClassifying) return Promise.resolve([]);
-        return this.classifyImage(this.video);
+    classifyPoseInVideo () {
+        if (this._isPoseClassifying) return Promise.resolve([]);
+        return this.classifyPose(this.video);
     }
 
     /**
@@ -928,4 +657,4 @@ class Scratch3TMPose2ScratchBlocks {
     }
 }
 
-module.exports = Scratch3TMPose2ScratchBlocks;
+module.exports = Scratch3TM2ScratchBlocks;
