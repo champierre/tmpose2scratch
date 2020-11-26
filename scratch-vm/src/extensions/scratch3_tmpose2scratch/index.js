@@ -118,23 +118,8 @@ class Scratch3TMPose2ScratchBlocks {
         this.runtime = runtime;
         this.locale = this.setLocale();
 
-        this.video = document.createElement('video');
-        this.video.width = 480;
-        this.video.height = 360;
-        this.video.autoplay = true;
-        this.video.style.display = 'none';
-
         this.interval = 1000;
         this.minInterval = 100;
-
-        const media = navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: false
-        });
-
-        media.then(stream => {
-            this.video.srcObject = stream;
-        });
 
         this.poseTimer = setInterval(() => {
             this.classifyPoseInVideo();
@@ -149,7 +134,6 @@ class Scratch3TMPose2ScratchBlocks {
 
         this.runtime.ioDevices.video.enableVideo();
         this.runtime.ioDevices.video.mirror = true;
-        this.isFlipHorizontal = true;
     }
 
     /**
@@ -211,7 +195,7 @@ class Scratch3TMPose2ScratchBlocks {
                     arguments: {
                         URL: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'https://teachablemachine.withgoogle.com/models/oPK1TaF6P/'
+                            defaultValue: 'https://teachablemachine.withgoogle.com/models/GTeGAl62b/'
                         }
                     }
                 },
@@ -438,7 +422,7 @@ class Scratch3TMPose2ScratchBlocks {
             return;
         }
         return new Promise(resolve => {
-            this.classifyPose(this.video)
+            this.classifyPoseInVideo()
                 .then(result => {
                     resolve(JSON.stringify(result));
                 });
@@ -450,16 +434,17 @@ class Scratch3TMPose2ScratchBlocks {
      *
      * @param {HTMLImageElement | ImageData | HTMLCanvasElement | HTMLVideoElement} input
      *  - Data source for classification.
+     * @param {boolean} isMirror - Input is morror mode or not.
      * @return {Promise} - A Promise that resolves the result of classification.
      *  The result will be empty when the poseModel was not set.
      */
-    classifyPose (input) {
+    classifyPose (input, isMirror) {
         if (!this.poseMetadata || !this.poseModel) {
             this._isPoseClassifying = false;
             return Promise.resolve([]);
         }
         this._isPoseClassifying = true;
-        return this.poseModel.estimatePose(input, this.isFlipHorizontal)
+        return this.poseModel.estimatePose(input, isMirror)
             .then(estimated => {
                 this.poseKeypoints = estimated.keypoints;
                 this.poseScore = estimated.score;
@@ -545,9 +530,10 @@ class Scratch3TMPose2ScratchBlocks {
     videoToggle (args) {
         const state = args.VIDEO_STATE;
         if (state === 'off') {
-            this.runtime.ioDevices.video.disableVideo();
+            this.runtime.ioDevices.video.setPreviewGhost(100);
         } else {
-            this.runtime.ioDevices.video.enableVideo();
+            this.runtime.ioDevices.video.setPreviewGhost(0);
+            this.runtime.ioDevices.video.mirror = state === 'on';
         }
     }
 
@@ -558,7 +544,7 @@ class Scratch3TMPose2ScratchBlocks {
      */
     classifyPoseInVideo () {
         if (this._isPoseClassifying) return Promise.resolve([]);
-        return this.classifyPose(this.video);
+        return this.classifyPose(this.runtime.ioDevices.video.getFrame({mirror: true}), true);
     }
 
     /**
