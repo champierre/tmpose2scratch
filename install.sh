@@ -9,6 +9,7 @@ EXTENSION_DESCRIPTION="ポーズを学習させよう。"
 
 cd node_modules/scratch-vm
 npm install ml5
+npm install @teachablemachine/pose
 cd ../../
 
 mkdir -p node_modules/scratch-vm/src/extensions/scratch3_${EXTENSION_ID}
