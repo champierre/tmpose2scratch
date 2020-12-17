@@ -195,7 +195,7 @@ class Scratch3TMPose2ScratchBlocks {
                     arguments: {
                         URL: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'https://teachablemachine.withgoogle.com/models/GTeGAl62b/'
+                            defaultValue: 'https://teachablemachine.withgoogle.com/models/aqQcgCOtq/'
                         }
                     }
                 },
