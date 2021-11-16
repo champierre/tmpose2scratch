@@ -43,13 +43,13 @@ DESCRIPTION="\
         bluetoothRequired: false,${LF}\
         translationMap: {${LF}\
             'ja': {${LF}\
-                'gui.extension.tm2scratchblocks.description': 'ポーズを学習させよう。'${LF}\
+                'gui.extension.tmpose2scratchblocks.description': 'ポーズを学習させよう。'${LF}\
             },${LF}\
             'ja-Hira': {${LF}\
-                'gui.extension.tm2scratchblocks.description': 'ポーズをがくしゅうさせよう。'${LF}\
+                'gui.extension.tmpose2scratchblocks.description': 'ポーズをがくしゅうさせよう。'${LF}\
             },${LF}\
             'en': {${LF}\
-                'gui.extension.tm2scratchblocks.description': 'Recognize your own poses.'${LF}\
+                'gui.extension.tmpose2scratchblocks.description': 'Recognize your own poses.'${LF}\
             }${LF}\
         }${LF}\
     },"
