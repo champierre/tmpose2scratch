@@ -5,7 +5,7 @@ LF=${LF%_}
 EXTENSION_NAME=TMPose2Scratch
 EXTENSION_ID=tmpose2scratch
 COLLABORATOR="Tsukurusha, YengawaLab and Google"
-EXTENSION_DESCRIPTION="ポーズを学習させよう。"
+EXTENSION_DESCRIPTION="Recognize your own poses."
 
 cd node_modules/scratch-vm
 npm install ml5
@@ -21,6 +21,8 @@ mkdir -p src/lib/libraries/extensions/${EXTENSION_ID}
 cp ${EXTENSION_ID}/scratch-gui/src/lib/libraries/extensions/${EXTENSION_ID}/${EXTENSION_ID}.png src/lib/libraries/extensions/${EXTENSION_ID}/
 cp ${EXTENSION_ID}/scratch-gui/src/lib/libraries/extensions/${EXTENSION_ID}/${EXTENSION_ID}-small.png src/lib/libraries/extensions/${EXTENSION_ID}/
 mv src/lib/libraries/extensions/index.jsx src/lib/libraries/extensions/index.jsx_orig
+mv src/containers/extension-library.jsx src/containers/extension-library.jsx_orig
+cp ${EXTENSION_ID}/scratch-gui/src/containers/extension-library.jsx src/containers/extension-library.jsx
 DESCRIPTION="\
     {${LF}\
         name: '${EXTENSION_NAME}',${LF}\
@@ -38,6 +40,17 @@ DESCRIPTION="\
         featured: true,${LF}\
         disabled: false,${LF}\
         internetConnectionRequired: true,${LF}\
-        bluetoothRequired: false${LF}\
+        bluetoothRequired: false,${LF}\
+        translationMap: {${LF}\
+            'ja': {${LF}\
+                'gui.extension.tm2scratchblocks.description': 'ポーズを学習させよう。'${LF}\
+            },${LF}\
+            'ja-Hira': {${LF}\
+                'gui.extension.tm2scratchblocks.description': 'ポーズをがくしゅうさせよう。'${LF}\
+            },${LF}\
+            'en': {${LF}\
+                'gui.extension.tm2scratchblocks.description': 'Recognize your own poses.'${LF}\
+            }${LF}\
+        }${LF}\
     },"
 sed -e "s|^export default \[$|import ${EXTENSION_ID}IconURL from './${EXTENSION_ID}/${EXTENSION_ID}.png';${LF}import ${EXTENSION_ID}InsetIconURL from './${EXTENSION_ID}/${EXTENSION_ID}-small.png';${LF}${LF}export default [${LF}${DESCRIPTION}|g" src/lib/libraries/extensions/index.jsx_orig > src/lib/libraries/extensions/index.jsx

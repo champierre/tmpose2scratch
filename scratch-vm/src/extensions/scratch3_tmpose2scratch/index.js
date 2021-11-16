@@ -14,6 +14,11 @@ const Message = {
         'ja-Hira': 'ポーズぶんるいモデル[URL]',
         'en': 'pose classification model URL [URL]'
     },
+    pose_classification_sample_model_url: {
+        'ja': 'https://teachablemachine.withgoogle.com/models/aqQcgCOtq/',
+        'ja-Hira': 'https://teachablemachine.withgoogle.com/models/aqQcgCOtq/',
+        'en': ' '
+    },
     classify_pose: {
         'ja': 'ポーズを推定する',
         'ja-Hira': 'ポーズをすいていする',
@@ -195,7 +200,7 @@ class Scratch3TMPose2ScratchBlocks {
                     arguments: {
                         URL: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'https://teachablemachine.withgoogle.com/models/aqQcgCOtq/'
+                            defaultValue: Message.pose_classification_sample_model_url[this.locale]
                         }
                     }
                 },
