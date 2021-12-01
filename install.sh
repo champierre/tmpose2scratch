@@ -51,6 +51,9 @@ DESCRIPTION="\
             'en': {${LF}\
                 'gui.extension.tmpose2scratchblocks.description': 'Recognize your own poses.'${LF}\
             }${LF}\
+            'ko': {${LF}\
+                'gui.extension.tmpose2scratchblocks.description': '나의 몸동작 포즈를 인식해볼까요'${LF}\
+            }${LF}\
         }${LF}\
     },"
 sed -e "s|^export default \[$|import ${EXTENSION_ID}IconURL from './${EXTENSION_ID}/${EXTENSION_ID}.png';${LF}import ${EXTENSION_ID}InsetIconURL from './${EXTENSION_ID}/${EXTENSION_ID}-small.png';${LF}${LF}export default [${LF}${DESCRIPTION}|g" src/lib/libraries/extensions/index.jsx_orig > src/lib/libraries/extensions/index.jsx
