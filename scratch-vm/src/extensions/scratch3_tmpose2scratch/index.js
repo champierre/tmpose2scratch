@@ -12,111 +12,130 @@ const Message = {
     pose_classification_model_url: {
         'ja': 'ポーズ分類モデルURL[URL]',
         'ja-Hira': 'ポーズぶんるいモデル[URL]',
-        'en': 'pose classification model URL [URL]'
+        'en': 'pose classification model URL [URL]',
+        'ko': '포즈 인식 모델 URL [URL]'
     },
     pose_classification_sample_model_url: {
         'ja': 'https://teachablemachine.withgoogle.com/models/aqQcgCOtq/',
         'ja-Hira': 'https://teachablemachine.withgoogle.com/models/aqQcgCOtq/',
-        'en': ' '
+        'en': ' ',
+        'ko': ' '
     },
     classify_pose: {
         'ja': 'ポーズを推定する',
         'ja-Hira': 'ポーズをすいていする',
-        'en': 'estimate pose'
+        'en': 'estimate pose',
+        'ko': '포즈 인식하기'
     },
     pose_label: {
         'ja': 'ポーズラベル',
         'ja-Hira': 'ポーズラベル',
-        'en': 'pose label'
+        'en': 'pose label',
+        'ko': '포즈 라벨'
     },
     is_pose_label_detected: {
         'ja': '[LABEL]のポーズになった',
         'ja-Hira': '[LABEL]のポーズになった',
-        'en': 'pose [LABEL] detected'
+        'en': 'pose [LABEL] detected',
+        'ko': '[LABEL] 포즈가 인식됨'
     },
     pose_label_confidence: {
         'ja': 'ポーズラベル[LABEL]の確度',
         'ja-Hira': 'ポーズラベル[LABEL]のかくど',
-        'en': 'confidence of pose [LABEL]'
+        'en': 'confidence of pose [LABEL]',
+        'ko': '[LABEL] 포즈의 신뢰도'
     },
     when_received_pose_label_block: {
         'ja': 'ポーズラベル[LABEL]を受け取ったとき',
         'ja-Hira': 'ポーズラベル[LABEL]をうけとったとき',
-        'en': 'when received pose label:[LABEL]'
+        'en': 'when received pose label:[LABEL]',
+        'ko': '[LABEL] 포즈 라벨을 받았을 때:',
     },
     label_block: {
         'ja': 'ラベル',
         'ja-Hira': 'ラベル',
         'en': 'label',
+        'ko': '라벨',
         'zh-cn': '标签'
     },
     any: {
         'ja': 'のどれか',
         'ja-Hira': 'のどれか',
         'en': 'any',
+        'ko': '어떤',
         'zh-cn': '任何'
     },
     any_without_of: {
         'ja': 'どれか',
         'ja-Hira': 'どれか',
         'en': 'any',
+        'ko': '어떤',
         'zh-cn': '任何'
     },
     all: {
         'ja': 'の全て',
         'ja-Hira': 'のすべて',
         'en': 'all',
+        'ko': '모든',
         'zh-cn': '所有'
     },
     toggle_classification: {
         'ja': 'ラベル付けを[CLASSIFICATION_STATE]にする',
         'ja-Hira': 'ラベルづけを[CLASSIFICATION_STATE]にする',
         'en': 'turn classification [CLASSIFICATION_STATE]',
+        'ko': '라벨 분류 [CLASSIFICATION_STATE]',
         'zh-cn': '[CLASSIFICATION_STATE]分类'
     },
     set_confidence_threshold: {
         'ja': '確度のしきい値を[CONFIDENCE_THRESHOLD]にする',
         'ja-Hira': 'かくどのしきいちを[CONFIDENCE_THRESHOLD]にする',
-        'en': 'set confidence threshold [CONFIDENCE_THRESHOLD]'
+        'en': 'set confidence threshold [CONFIDENCE_THRESHOLD]',
+        'ko': '신뢰도 기준 설정 [CONFIDENCE_THRESHOLD]'
     },
     get_confidence_threshold: {
         'ja': '確度のしきい値',
         'ja-Hira': 'かくどのしきいち',
-        'en': 'confidence threshold'
+        'en': 'confidence threshold',
+        'ko': '신뢰도 기준'
     },
     set_classification_interval: {
         'ja': 'ラベル付けを[CLASSIFICATION_INTERVAL]秒間に1回行う',
         'ja-Hira': 'ラベルづけを[CLASSIFICATION_INTERVAL]びょうかんに1かいおこなう',
         'en': 'Label once every [CLASSIFICATION_INTERVAL] seconds',
+        'ko': '신뢰도 기준 설정 [CONFIDENCE_THRESHOLD]',
         'zh-cn': '每隔[CLASSIFICATION_INTERVAL]秒标记一次'
     },
     video_toggle: {
         'ja': 'ビデオを[VIDEO_STATE]にする',
         'ja-Hira': 'ビデオを[VIDEO_STATE]にする',
         'en': 'turn video [VIDEO_STATE]',
+        'ko':'비디오 화면 [VIDEO_STATE]',
         'zh-cn': '[VIDEO_STATE]摄像头'
     },
     on: {
         'ja': '入',
         'ja-Hira': 'いり',
         'en': 'on',
+        'ko': '켜기',
         'zh-cn': '开启'
     },
     off: {
         'ja': '切',
         'ja-Hira': 'きり',
         'en': 'off',
+        'ko': '멈추기',
         'zh-cn': '关闭'
     },
     video_on_flipped: {
         'ja': '左右反転',
         'ja-Hira': 'さゆうはんてん',
         'en': 'on flipped',
+        'ko': '좌우 뒤집기',
         'zh-cn': '镜像开启'
     }
 };
 
-const AvailableLocales = ['en', 'ja', 'ja-Hira', 'zh-cn'];
+const AvailableLocales = ['en', 'ja', 'ja-Hira', 'ko', 'zh-cn'];
 
 class Scratch3TMPose2ScratchBlocks {
     constructor (runtime) {
