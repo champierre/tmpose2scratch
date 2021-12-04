@@ -49,7 +49,7 @@ const Message = {
         'ja': 'ポーズラベル[LABEL]を受け取ったとき',
         'ja-Hira': 'ポーズラベル[LABEL]をうけとったとき',
         'en': 'when received pose label:[LABEL]',
-        'ko': '[LABEL] 포즈 라벨을 받았을 때:',
+        'ko': '[LABEL] 포즈 라벨을 받았을 때:'
     },
     label_block: {
         'ja': 'ラベル',

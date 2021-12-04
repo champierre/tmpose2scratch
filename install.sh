@@ -50,7 +50,7 @@ DESCRIPTION="\
             },${LF}\
             'en': {${LF}\
                 'gui.extension.tmpose2scratchblocks.description': 'Recognize your own poses.'${LF}\
-            }${LF}\
+            },${LF}\
             'ko': {${LF}\
                 'gui.extension.tmpose2scratchblocks.description': '나의 몸동작 포즈를 인식해볼까요'${LF}\
             }${LF}\
