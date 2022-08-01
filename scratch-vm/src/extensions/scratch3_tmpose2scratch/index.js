@@ -158,15 +158,23 @@ class Scratch3TMPose2ScratchBlocks {
         this.runtime.ioDevices.video.enableVideo();
         this.runtime.ioDevices.video.mirror = true;
 
-        // tmPose needs to specific version of tenforflow tfjs@1.3.1
-        const tfjs = document.createElement('script');
-        tfjs.src = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js';
-        document.head.appendChild(tfjs);
+        // To avoid the problem of the library not loading the first time,
+        // we load scripts synchronously.
+        const loadScriptSynchronously = (url) => {
+            const request = new XMLHttpRequest();
+            request.open('GET', url, false);
+            request.send(null);
+            if (request.status === 200) {
+                const script = document.createElement('script');
+                script.text = request.responseText;
+                document.head.appendChild(script);
+            }
+        };
 
+        // tmPose needs to specific version of tenforflow tfjs@1.3.1
+        loadScriptSynchronously('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js');
         // get `tmPose` object from CDN
-        const tm = document.createElement('script');
-        tm.src = 'https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js';
-        document.head.appendChild(tm);
+        loadScriptSynchronously('https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js');
     }
 
     /**

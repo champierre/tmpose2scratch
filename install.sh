@@ -7,11 +7,6 @@ EXTENSION_ID=tmpose2scratch
 COLLABORATOR="Tsukurusha, YengawaLab and Google"
 EXTENSION_DESCRIPTION="Recognize your own poses."
 
-cd node_modules/scratch-vm
-npm install ml5
-
-cd ../../
-
 mkdir -p node_modules/scratch-vm/src/extensions/scratch3_${EXTENSION_ID}
 cp ${EXTENSION_ID}/scratch-vm/src/extensions/scratch3_${EXTENSION_ID}/index.js node_modules/scratch-vm/src/extensions/scratch3_${EXTENSION_ID}/
 mv node_modules/scratch-vm/src/extension-support/extension-manager.js node_modules/scratch-vm/src/extension-support/extension-manager.js_orig
