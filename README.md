@@ -9,6 +9,10 @@ TMPose2Scratchは2020年よりオープンソースかつ無料で提供して�
 
 TMPose2Scratch connects Google Teachable Machine 2 with Scratch 3. You can use **pose recognition** on Scratch project.
 
+## License
+
+TMPose2Scratch is under [AGPL-3.0 license](./LICENSE), open source and freely available to anyone. You can use it at your classes, workshops. Commercial usage is also accepted. If you or your students created something cool using TMPose2Scratch, please share it on SNS using hashtag #tmpose2scratch or let me know to any of these contacts.
+
 ## How to use
 
 ### Pose recognition
